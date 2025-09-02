@@ -1,4 +1,4 @@
-import { getProductById } from '@/app/lib/db';
+import { getCommentsByProductId, getProductById } from '@/app/lib/db';
 import React from 'react'
 import {
     Carousel,
@@ -7,47 +7,40 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from "@/components/ui/carousel"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import ProductCounter from '@/app/components/product-counter';
+import { Star } from 'lucide-react';
+import ProductDetailClient from './products-detail-client';
 export default async function SingleProduct({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     const product = await getProductById(Number(id));
+    const comments = await getCommentsByProductId(Number(id));
+    console.log(comments);
+
+    if (!product) return null;
     return (
-        <div className='p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4'>
+        <>
+            <ProductDetailClient product={product}></ProductDetailClient>
             <div>
-                <Card>
-                    <CardHeader>
-                        <CardTitle>{product?.name}</CardTitle>
-                        <CardDescription>
-                            {product?.description}
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="flex flex-col aspect-square items-center justify-center p-6">
-                        <div>
-                            <p>in Stock: {product?.quantity}</p>
-                        </div>
-                        <ProductCounter quantity={product?.quantity}></ProductCounter>
-                    </CardContent>
-                </Card>
-            </div>
-            <Carousel className=" max-w-xs mx-auto">
-                <CarouselContent>
-                    {Array.from({ length: 5 }).map((_, index) => (
-                        <CarouselItem key={index}>
-                            <div className="p-1">
-                                <Card>
-                                    <CardContent className="flex aspect-square items-center justify-center p-6">
-                                        <img className='text-center mx-auto' src="https://imgs.search.brave.com/T4r0Ba-OkUPmu5YAb0rR4c3ivLbObDlwuPgkRMg0nXE/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZWRlbGl2ZXJ5Lm5l/dC9lUFI4UHlLZjg0/d1BIeDdfUlltRWFn/LzAzM2M1M2M1LTI5/NmItNGJkYy1jZTU1/LTdlNWU5NGM3YmEw/MC84Ng" alt="" />
-                                    </CardContent>
-                                </Card>
-                            </div>
-                        </CarouselItem>
+                <h2 className='text-2xl font-bold'>Comments</h2>
+                <div className='flex flex-col gap-3'>
+                    {comments.map(comment => (
+                        <Card key={comment.id} className='w-full-[calc(100%-1rem)] bg-gray-200 m-4'>
+                            <CardContent className="flex-col items-start justify-start p-6 ">
+                                <div className='flex gap-2'>
+                                    <p className='font-bold text-lg'>{comment.name}</p>
+                                    <p>2 days ago</p>
+                                    {Array.from({ length: product.rating ?? 0 }).map((_, i) => (
+                                        <Star key={i} color='gold' fill='gold' />
+                                    ))}
+                                </div>
+                                <p className='text-left text-xl'>{comment.body}</p>
+                            </CardContent>
+                        </Card>
                     ))}
-                </CarouselContent>
-                <CarouselPrevious />
-                <CarouselNext />
-            </Carousel>
-        </div>
+                </div>
+            </div>
+        </>
     )
 }
