@@ -30,8 +30,8 @@ type Product = {
     quantity: number
 }
 export default async function Products() {
-    
-const products: Product[] = await getProducts();
+
+    const products: Product[] = await getProducts();
     return (
         <>
             <div>
@@ -55,8 +55,11 @@ const products: Product[] = await getProducts();
                                     add to your cart - ${product.price}
                                 </Button>
                                 <Link href={'/products/' + product.id} className="w-full">
-                                    details
+                                <Button variant={'outline'} className="w-full cursor-pointer">
+                                    Add to your cart
+                                </Button>
                                 </Link>
+                                
                             </CardFooter>
                         </Card>
                     ))}

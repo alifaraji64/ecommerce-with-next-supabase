@@ -1,3 +1,4 @@
+import { log } from "console"
 
 export type Product = {
     id: number,
@@ -14,6 +15,10 @@ export type Comment = {
     name: string,
     postId: number
 }
+export type CartItem = {
+    productId: number,
+    quantity: number
+}
 const PRODUCTS: Product[] = [
     { id: 1, name: "Product 1", price: 100, description: "This is product 1", imageUrl: "/product1.jpg", quantity: 2, rating: 5 },
     { id: 2, name: "Product 2", price: 200, description: "This is product 2 and it is an amazing product, check it out", imageUrl: "/product2.jpg", quantity: 5, rating: 4 },
@@ -22,16 +27,17 @@ const PRODUCTS: Product[] = [
     { id: 5, name: "Product 5", price: 500, description: "This is product 5", imageUrl: "/product5.jpg", quantity: 4, rating: 5 },
     { id: 6, name: "Product 6", price: 600, description: "This is product 6", imageUrl: "/product6.jpg", quantity: 3, rating: 4 },
 ]
+export const CartItems:CartItem[]=[]
 export const getProducts = async (): Promise<Product[]> => {
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 1000));
     return PRODUCTS;
 }
 export const getProductById = async (id: number): Promise<Product | undefined> => {
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 1000));
     return PRODUCTS.find(product => product.id === id);
 }
 export const getCommentsByProductId = async (id: number): Promise<Comment[]> => {
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 1000));
     const response = await fetch('https://jsonplaceholder.typicode.com/comments?postId=' + id);
     const data = await response.json();
     return data;
