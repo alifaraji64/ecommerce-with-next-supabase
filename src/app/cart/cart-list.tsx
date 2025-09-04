@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import Loading from './loading'
 
 export default function CartList() {
-    const { items, removeItem,totalPrice,calcTotalPrice } = useCart()
+    const { items, removeItem,totalPrice } = useCart()
     const [products, setproducts] = useState<Product[]>([])
     useEffect(() => {
         const fetchProducts = async () => {
@@ -27,7 +27,7 @@ export default function CartList() {
     }
     return (
         <>
-            <h3 className='mt-8'>total:{totalPrice}</h3>
+            <h3 className='m-8 text-xl font-bold'>Total Price: ${totalPrice}</h3>
             {items.map((item, index) => {
                 const product = products.find(p => p.id === item.productId);
                 return <div key={index}>

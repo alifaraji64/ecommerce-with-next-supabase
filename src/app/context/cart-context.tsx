@@ -37,8 +37,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
             items.map((item) => getProductById(item.productId))
         );
         const total = products.reduce((sum, product, i) => {
-            if (!product) return sum; // skip if not found
-            return sum + product.price * items[i].quantity;
+            return sum + product!.price * items[i].quantity;
         }, 0);
         setTotalPrice(total);
     };
