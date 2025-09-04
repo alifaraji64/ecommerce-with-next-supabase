@@ -46,7 +46,7 @@ export default async function Products() {
                             </CardHeader>
                             <Link href={'/products/' + product.id} >
                                 <CardContent>
-                                    <img width={140} className='text-center mx-auto' src="https://imgs.search.brave.com/T4r0Ba-OkUPmu5YAb0rR4c3ivLbObDlwuPgkRMg0nXE/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZWRlbGl2ZXJ5Lm5l/dC9lUFI4UHlLZjg0/d1BIeDdfUlltRWFn/LzAzM2M1M2M1LTI5/NmItNGJkYy1jZTU1/LTdlNWU5NGM3YmEw/MC84Ng" alt="" />
+                                    <img width={140} className='text-center mx-auto' src={product.imageUrl} alt="" />
                                 </CardContent>
                             </Link>
 

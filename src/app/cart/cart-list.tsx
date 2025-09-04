@@ -5,9 +5,10 @@ import { get } from 'http'
 import { CartItem, getProductById, Product } from '../lib/db'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import Loading from './loading'
 
 export default function CartList() {
-    const { items } = useCart()
+    const { items, removeItem,totalPrice,calcTotalPrice } = useCart()
     const [products, setproducts] = useState<Product[]>([])
     useEffect(() => {
         const fetchProducts = async () => {
@@ -15,40 +16,47 @@ export default function CartList() {
             const results = await Promise.all(
                 items.map((item: CartItem) => getProductById(item.productId))
             );
-            //setproducts(results.filter((product): product is Product => product !== undefined));
             setproducts(results as Product[]);
         }
+
         fetchProducts();
+        
     }, [items])
-    if(products.length===0){
-        return <div className='flex justify-center items-center h-screen'>
-            <div className='animate-bounce border-2 border-blue-600 rounded-full w-40 h-40 mx-auto flex justify-center items-center'><h1>your cart is empty</h1></div>
-        </div>
+    if (products.length === 0) {
+        return <Loading></Loading>;
     }
     return (
         <>
-            {items.map((item,index) => {
+            <h3 className='mt-8'>total:{totalPrice}</h3>
+            {items.map((item, index) => {
                 const product = products.find(p => p.id === item.productId);
                 return <div key={index}>
-                    <Card >
-                    <CardHeader>
-                        <CardTitle className='text-3xl'>{product?.name}</CardTitle>
-                        <CardDescription className='text-xl'>
-                            {product?.description}
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="flex flex-col items-center justify-center p-6">
-                        <div>
-                            <p>in Stock: {product?.quantity}</p>
-                        </div>
-                        <img src={product?.imageUrl} alt="" />
-                    </CardContent>
-                    <CardFooter className="flex-col gap-2">
-                        <Button variant="outline" className="w-full cursor-pointer">
-                            checkout
-                        </Button>
-                    </CardFooter>
-                </Card>
+                    <Card className='m-8'>
+                        <CardHeader className='flex items-center gap-4 justify-evenly'>
+                            <div>
+                                <CardTitle className='text-3xl'>{product?.name}</CardTitle>
+                                <CardDescription className='text-xl'>
+                                    {product?.description}
+                                </CardDescription>
+                            </div>
+
+                            <img className='max-w-40' src={product?.imageUrl} alt="" />
+                        </CardHeader>
+                        <CardContent className="flex flex-col items-center justify-center p-6">
+                            <div>
+                                <p>Quantity: {items.find(item => item.productId == product?.id)?.quantity}</p>
+                            </div>
+
+                        </CardContent>
+                        <CardFooter className="flex-col gap-2">
+                            <Button variant="outline" className="w-full cursor-pointer">
+                                checkout
+                            </Button>
+                            <Button onClick={() => { removeItem(item) }} variant="destructive" className="w-full cursor-pointer">
+                                Remove from cart
+                            </Button>
+                        </CardFooter>
+                    </Card>
                     <hr />
                 </div>
             })}
