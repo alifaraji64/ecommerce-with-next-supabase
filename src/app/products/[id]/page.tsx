@@ -17,7 +17,7 @@ export default async function SingleProduct({ params }: { params: Promise<{ id: 
         <>
             <ProductDetailClient product={product}></ProductDetailClient>
             <CartButton></CartButton>
-            <Comments comments={comments} rating={product.rating}></Comments>
+            <Comments comments={comments} rating={product.rating} productId={Number(id)}></Comments>
         </>
     )
 }

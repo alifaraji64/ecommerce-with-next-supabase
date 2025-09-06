@@ -10,8 +10,12 @@ import { toast } from 'sonner'
 
 export default function ProductDetailClient({ product }: { product: Product }) {
     const { addItem } = useCart()
-    const [counter, setcounter] = useState(1)
+    const [counter, setcounter] = useState(product.quantity && product.quantity > 0 ? 1 : 0)
     const handleAddCart = () => {
+        if (product.quantity === 0) {
+            toast.error("This product is out of stock")
+            return;
+        }
         addItem({ productId: product.id, quantity: counter })
         toast("item has been added to the cart", {
           action: {
