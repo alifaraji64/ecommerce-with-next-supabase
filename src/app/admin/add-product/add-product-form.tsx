@@ -1,15 +1,33 @@
 'use client'
-import React, { useActionState } from 'react'
+import React, { useActionState, useEffect, useState } from 'react'
 import { addProduct, Error, Values } from '../actions'
+import { toast } from 'sonner'
 
 export default function AddProductForm({ categories }: { categories: string[] }) {
-    const [state, formAction, isPendign] = useActionState(addProduct, {
+    //preview is an array of string for multiple images
+    const [preview, setPreview] = useState<string[]>([]);
+    //I created filecopy for storing the actual file objects and validating them because when we get it form.body the files are not sync with the input files
+    const [fileCopy, setfileCopy] = useState<File[] | null>(null)
+    const addProductWithFiles = addProduct.bind(null, fileCopy)
+    const [state, formAction, isPendign] = useActionState(addProductWithFiles, {
         errors: {} as Error,
-        values: {} as Values
+        values: {} as Values,
+        submitted: false
     })
+    useEffect(() => {
+        if (state.submitted) {
+            //show success message
+            toast.success('Product added successfully')
+            setfileCopy(null)
+            setPreview([])
+        }
+        if(state.errors.msg){
+            toast.error(state.errors.msg)
+        }
+    }, [state])
     return (
         <form action={formAction} className='max-w-lg mx-auto mt-8 grid gap-28'>
-            <div className="grid gap-12">
+            <div className="grid gap-6">
                 <div className="grid gap-2">
                     <label htmlFor="name">Product Name</label>
                     {state.errors.name && <p className='text-red-500'>{state.errors.name}</p>}
@@ -42,9 +60,41 @@ export default function AddProductForm({ categories }: { categories: string[] })
                 <div className="grid gap-2">
                     <label htmlFor="imageUrl">Product Image URL</label>
                     {state.errors.image && <p className='text-red-500'>{state.errors.image}</p>}
-                    <input defaultValue={state.values.imageUrl} type="file" name="imageUrl" id="imageUrl" className='w-full border border-gray-300 rounded-md p-2' />
+                    <input onChange={(e) => {
+                        const files = e.target.files;
+                        if (files) {
+                            const fileArray = Array.from(files).map((file) => URL.createObjectURL(file));
+                            setPreview((prevImages) => prevImages.concat(fileArray));
+                            setfileCopy((prev) => Array.from(files).concat(prev ?? []))
+                            console.log('====================================');
+                            console.log(fileArray);
+                            console.log('====================================');
+                        }
+                    }} multiple
+                        defaultValue={preview}
+                        type="file" name="imageUrl" id="imageUrl"
+                        className='w-full border border-gray-300 rounded-md p-2' />
+                    {preview.length > 0 && (
+                        <div className='flex flex-wrap gap-2 mt-2'>
+                            {preview.map((src, index) => (
+                                <div key={index} className='flex flex-col items-center'>
+                                    <img key={index} src={src} alt={`Preview ${index}`} className='w-20 h-20 object-cover rounded' />
+                                    <button className='bg-red-500 text-center p-1 rounded-sm text-white text-sm mt-1' onClick={() => {
+                                        setPreview((prev) => prev.filter((_, i) => i !== index));
+                                        setfileCopy((prev) => {
+                                            if (!prev) return null;
+                                            const newFiles = prev.filter((_, i) => i !== index)
+                                            return newFiles;
+                                        })
+                                    }}>Delete</button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
-                <button type="submit" disabled={isPendign} className='bg-blue-600 text-white rounded-md p-2'>Add Product</button>
+                <button type="submit" disabled={isPendign} className='bg-blue-600 text-white rounded-md p-2'>
+                    {isPendign ? 'Adding Product...' : 'Add Product'}
+                </button>
             </div>
         </form>
     )
