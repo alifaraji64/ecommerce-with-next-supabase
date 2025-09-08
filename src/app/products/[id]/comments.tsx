@@ -1,5 +1,6 @@
 'use client'
-import { addComment, Comment, Error } from '@/app/lib/db'
+import { addComment } from '@/app/lib/db'
+import {  Comment, Error } from '@/app/lib/types'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'

@@ -1,21 +1,42 @@
 'use client'
-import { Product } from '@/app/lib/db'
-import React, { useActionState, useEffect } from 'react'
+import { Product } from '@/app/lib/types'
+import React, { useActionState, useEffect, useState } from 'react'
 import { editProduct, Values } from '../actions'
 import { toast } from 'sonner'
-
+import { useRouter } from "next/navigation";
 export default function EditProductForm({ product, categories }: { product: Product, categories: string[] }) {
-    const [state, formAction, isPendign] = useActionState(editProduct, {
+
+    const [images, setimages] = useState<string[]>(product.images);
+    const [preview, setPreview] = useState<string[]>([]);
+    const [files, setfiles] = useState<File[] | null>(null);
+    const editProductWithFiles = editProduct.bind(null, { productId: product.id.toString(), images, files })
+    const [state, formAction, isPendign] = useActionState(editProductWithFiles, {
         errors: {} as Error,
         values: {} as Values,
-        submitted: false
+        submitted: false,
+        data:{} as Product|null
     })
+    const router = useRouter();
     //use use effect to show success message
     useEffect(() => {
         if (state.submitted) {
-            toast('Product edited successfully');
+            //show success message
+            toast.success('Product added successfully')
+            setPreview([])
+            setfiles(null)
+            router.refresh()
+            console.log('data');
+            
+            console.log(state.data);
+            
         }
-    }, [state.submitted])
+        if (state.errors.msg) {
+            toast.error(state.errors.msg)
+        }
+    }, [state])
+    useEffect(() => {
+        setimages(product.images);
+    }, [product]);
 
     return (
         <form action={formAction} className='max-w-lg mx-auto mt-8 grid gap-28'>
@@ -52,7 +73,48 @@ export default function EditProductForm({ product, categories }: { product: Prod
                 <div className="grid gap-2">
                     <label htmlFor="imageUrl">Product Image URL</label>
                     {state.errors.image && <p className='text-red-500'>{state.errors.image}</p>}
-                    <input defaultValue={product.imageUrl} type="file" name="imageUrl" id="imageUrl" className='w-full border border-gray-300 rounded-md p-2' />
+                    <input onChange={(e) => {
+                        const files = e.target.files;
+                        if (files) {
+                            const fileArray = Array.from(files).map((file) => URL.createObjectURL(file));
+                            setPreview((prevImages) => prevImages.concat(fileArray));
+                            setfiles((prev) => Array.from(files).concat(prev ?? []))
+                            console.log('====================================');
+                            console.log(fileArray);
+                            console.log('====================================');
+                        }
+                    }} defaultValue={images[0]} type="file" name="imageUrl" id="imageUrl" className='w-full border border-gray-300 rounded-md p-2' />
+                    <div className='flex flex-wrap gap-2 mt-2'>
+                        {images.map((src, index) => (
+                            <div key={index} className='flex flex-col items-center'>
+                                <img key={index} src={src} alt={`Preview ${index}`} className='w-20 h-20 object-cover rounded' />
+                                <button type='button' className='bg-red-500 text-center p-1 rounded-sm text-white text-sm mt-1' onClick={() => {
+                                    setPreview((prev) => prev.filter((_, i) => i !== index));
+                                    setfiles((prev) => prev && prev.filter((_, i) => i !== index))
+                                    setimages((prev) => prev.filter((_, i) => i !== index));
+
+                                }}>Delete</button>
+                            </div>
+                        ))}
+                    </div>
+                    {preview.length > 0 && (
+                        <div className='flex flex-wrap gap-2 mt-2'>
+                            {preview.map((src, index) => (
+                                <div key={index} className='flex flex-col items-center'>
+                                    <img key={index} src={src} alt={`Preview ${index}`} className='w-20 h-20 object-cover rounded' />
+                                    <button className='bg-red-500 text-center p-1 rounded-sm text-white text-sm mt-1' onClick={() => {
+                                        setPreview((prev) => prev.filter((_, i) => i !== index));
+                                        // setfileCopy((prev) => {
+                                        //     if (!prev) return null;
+                                        //     const newFiles = prev.filter((_, i) => i !== index)
+                                        //     return newFiles;
+                                        // })
+                                    }}>Delete</button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
                 </div>
                 <button type="submit" disabled={isPendign} className='bg-blue-600 text-white rounded-md p-2'>
                     {isPendign ? 'Editing Product...' : 'Edit Product'}

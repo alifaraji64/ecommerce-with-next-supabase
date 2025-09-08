@@ -21,17 +21,16 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { get } from 'http'
 import { getProducts } from '../lib/db'
-type Product = {
-    id: number,
-    name: string,
-    price: number,
-    description: string,
-    imageUrl: string,
-    quantity: number
-}
+import { Product } from '../lib/types'
+
 export default async function Products() {
 
     const products: Product[] = await getProducts();
+    console.log(products);
+    if(!products || products.length === 0){
+        return <div className='text-center'>no product has been added</div>
+    }
+    
     return (
         <>
             <div>
@@ -46,7 +45,7 @@ export default async function Products() {
                             </CardHeader>
                             <Link href={'/products/' + product.id} >
                                 <CardContent>
-                                    <img width={140} className='text-center mx-auto' src={product.imageUrl} alt="" />
+                                    <img width={140} className='text-center mx-auto' src={product.images[0]} alt="" />
                                 </CardContent>
                             </Link>
 

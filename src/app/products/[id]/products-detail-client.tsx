@@ -1,6 +1,6 @@
 'use client'
 import { useCart } from '@/app/context/cart-context'
-import { Product } from '@/app/lib/db'
+import { Product } from '@/app/lib/types'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
@@ -46,6 +46,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                             }
                             <p>based on 100 reviews</p>
                         </div>
+                        <h3>${product.price}</h3>
                     </CardHeader>
                     <CardContent className="flex flex-col aspect-square items-center justify-center p-6">
                         <div>
@@ -77,12 +78,12 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             <div className='text-center'>
                 <Carousel className=" max-w-xs mx-auto  min-w-1/2 grid-cols-3">
                     <CarouselContent>
-                        {Array.from({ length: 5 }).map((_, index) => (
+                        {product.images.map((imageUrl, index) => (
                             <CarouselItem key={index}>
                                 <div className="p-1">
                                     <Card>
                                         <CardContent className="flex aspect-square items-center justify-center p-6">
-                                            <img className='text-center mx-auto' src="https://imgs.search.brave.com/T4r0Ba-OkUPmu5YAb0rR4c3ivLbObDlwuPgkRMg0nXE/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZWRlbGl2ZXJ5Lm5l/dC9lUFI4UHlLZjg0/d1BIeDdfUlltRWFn/LzAzM2M1M2M1LTI5/NmItNGJkYy1jZTU1/LTdlNWU5NGM3YmEw/MC84Ng" alt="" />
+                                            <img className='text-center mx-auto' src={imageUrl} alt="" />
                                         </CardContent>
                                     </Card>
                                 </div>

@@ -2,10 +2,11 @@
 import React, { Suspense, useEffect, useState } from 'react'
 import { useCart } from '../context/cart-context'
 import { get } from 'http'
-import { CartItem, getProductById, Product } from '../lib/db'
+import { CartItem, Product } from '../lib/types'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import Loading from './loading'
+import { getProductById } from '../lib/db'
 
 export default function CartList() {
     const { items, removeItem,totalPrice } = useCart()
@@ -40,7 +41,7 @@ export default function CartList() {
                                 </CardDescription>
                             </div>
 
-                            <img className='max-w-40' src={product?.imageUrl} alt="" />
+                            <img className='max-w-40' src={product?.images[0]} alt="" />
                         </CardHeader>
                         <CardContent className="flex flex-col items-center justify-center p-6">
                             <div>

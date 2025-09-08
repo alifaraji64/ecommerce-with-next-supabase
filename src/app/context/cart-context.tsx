@@ -1,7 +1,8 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
-import { CartItem, getProductById, Product } from "../lib/db";
+import { CartItem, Product } from "../lib/types";
+import { getProductById } from "../lib/db";
 
 type CartContextType = {
     items: CartItem[];
