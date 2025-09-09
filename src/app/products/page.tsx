@@ -36,7 +36,7 @@ export default async function Products() {
             <div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
                     {products.map((product) => (
-                        <Card className="w-full max-w-sm" key={product.id}>
+                        <Card className="w-full max-w-sm flex flex-col justify-between" key={product.id}>
                             <CardHeader>
                                 <CardTitle>{product.name}</CardTitle>
                                 <CardDescription>

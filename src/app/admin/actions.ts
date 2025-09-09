@@ -143,7 +143,7 @@ export const editProduct = async ({ productId, images, files }: { productId: str
         const URLs = files ? await Promise.all(
             files!.map(async (file) => await uploadImage(file))
         ) : []
-        const { error, data } = await supabase.from('products').update({
+        const { error,data } = await supabase.from('products').update({
             name,
             description,
             price: Number(price),
@@ -151,7 +151,7 @@ export const editProduct = async ({ productId, images, files }: { productId: str
             category,
             images: URLs.concat(images),
             rating: 0
-        }).eq('id', Number(productId)).single();
+        }).eq('id', Number(productId)).select().single();
         if (error) {
             return {
                 errors: { msg: error.message },
@@ -160,9 +160,6 @@ export const editProduct = async ({ productId, images, files }: { productId: str
                 data: null
             };
         }
-        console.log('data1');
-
-        console.log(data);
 
         return {
             errors: {} as Error,

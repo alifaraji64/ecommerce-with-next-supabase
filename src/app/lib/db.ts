@@ -1,7 +1,7 @@
 'use server'
 
 import { supabase } from "./supabase";
-import { CartItem, Product, Error, Comment, formState } from "./types";
+import { CartItem, Product, Error as CustomError, Comment, formState } from "./types";
 
 
 
@@ -20,20 +20,20 @@ export const getProducts = async (): Promise<Product[]> => {
 }
 export const getProductById = async (id: number): Promise<Product | undefined> => {
     console.log('test');
-    
+
     await new Promise(resolve => setTimeout(resolve, 1000));
     const { data } = await supabase.from('products').select('*').eq('id', id).single();
     return data as Product;
 }
 export const getCommentsByProductId = async (id: number): Promise<Comment[]> => {
     await new Promise(resolve => setTimeout(resolve, 1000));
-    const response = await fetch('https://jsonplaceholder.typicode.com/comments?postId=' + id);
-    const data = await response.json();
-    return data;
+    const { error, data } = await supabase.from('comments').select('*').eq('productId', id).select()
+    if (error) { throw new Error('error while getting comments, try again later') }
+    return data as Comment[];
 }
 export const addComment = async ({ setisDialogOpen, rating, productId }: { setisDialogOpen: React.Dispatch<React.SetStateAction<boolean>>, rating: number, productId: number }, prevState: formState, formData: FormData) => {
     await new Promise(resolve => setTimeout(resolve, 1000));
-    const errors: Error = {};
+    const errors: CustomError = {};
     console.log('====================================');
     console.log(formData.get('comment'));
     console.log(productId);

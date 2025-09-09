@@ -11,8 +11,9 @@ export type Product = {
 export type Comment = {
     id: number,
     body: string,
-    name: string,
-    postId: number
+    username: string,
+    productId: number,
+    rating:number
 }
 export type CartItem = {
     productId: number,
@@ -22,6 +23,7 @@ export type Error = {
     commentText?: string;
     rating?: string;
     purchased?: string;
+    msg?: string;
 };
 export type formState = {
     errors: Error;

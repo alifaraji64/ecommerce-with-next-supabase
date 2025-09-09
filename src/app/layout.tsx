@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "./components/navbar";
 import { CartProvider } from "./context/cart-context";
 import { Toaster } from "@/components/ui/sonner"
+import { ClerkProvider } from "@clerk/nextjs";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -26,16 +27,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <CartProvider>
-        <body
+      <ClerkProvider>
+        <CartProvider>
+          <body
 
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-          <Toaster theme="dark" style={{background:'blue'}}/>
-          <Navbar></Navbar>
-          {children}
-        </body>
-      </CartProvider>
+            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          >
+            <Toaster theme="dark" style={{ background: 'blue' }} />
+            <Navbar></Navbar>
+            {children}
+          </body>
+        </CartProvider>
+      </ClerkProvider>
+
 
     </html>
   );
