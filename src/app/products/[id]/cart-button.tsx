@@ -4,24 +4,15 @@ import { CartItems } from '@/app/lib/types'
 import { Button } from '@/components/ui/button'
 import { ShoppingCart } from 'lucide-react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import React from 'react'
-import { toast } from 'sonner'
 
 export default function CartButton() {
-  const { items, addItem } = useCart()
-  const router = useRouter()
+    const { items, addItem } = useCart()
   return (
-    <Button variant={'link'} onClick={() => {
-      if (items.length) {
-        router.push('/cart')
-        return;
-      }
-      toast('your cart doesn\'t have any item',{position:'top-center',style:{background:'darkblue'}})
-    }} className="fixed bottom-6 right-6 cursor-pointer">
+    <Link href={'/cart'} className="fixed bottom-6 right-6 cursor-pointer">
       <Button
         size="icon"
-        className="relative cursor-pointer h-14 w-14 rounded-full shadow-lg bg-blue-600 hover:bg-blue-700 text-white"
+        className="relative h-14 w-14 rounded-full shadow-lg bg-blue-600 hover:bg-blue-700 text-white"
       >
         <ShoppingCart className="h-6 w-6" />
 
@@ -32,6 +23,6 @@ export default function CartButton() {
           </span>
         )}
       </Button>
-    </Button>
+    </Link>
   )
 }

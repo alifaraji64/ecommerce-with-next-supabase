@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import Loading from './loading'
 import { getProductById } from '../lib/db'
 import { useRouter } from 'next/navigation'
+import { createInvoice } from './actions'
 
 export default function CartList() {
     const { items, removeItem, totalPrice } = useCart()
@@ -25,7 +26,7 @@ export default function CartList() {
         fetchProducts();
 
     }, [items])
-    if (products.length === 0) {
+    if (items.length === 0) {
         router.back()
     }
     return (
@@ -53,20 +54,8 @@ export default function CartList() {
                         </CardContent>
                         <CardFooter className="flex-col gap-2">
                             <Button variant="outline" className="w-full cursor-pointer" onClick={async() => {
-                                const res=await fetch('https://payid19.com/api/v1/create_invoice', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    },
-                                    body: JSON.stringify({
-                                        public_key: process.env.PAYID19_PUBLIC_KEY,
-                                        private_key: process.env.PAYID19_PRIVATE_KEY,
-                                        test: 1,
-                                        price_amount: '100',
-                                        success_url: `http://localhost:3000/payid19`
-                                    })
-                                })
-                                console.log(res);
+                                const res = await createInvoice(totalPrice.toString())
+                                window.open(res.message, '_blank')
                                 
                             }}>
                                 checkout
