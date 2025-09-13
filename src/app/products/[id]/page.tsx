@@ -21,7 +21,7 @@ export default async function SingleProduct({ params }: { params: Promise<{ id: 
     if (!product) return null;
     return (
         <>
-            <ProductDetailClient product={product}></ProductDetailClient>
+            <ProductDetailClient product={product} ratings={comments?.map(c=>c.rating)??[]}></ProductDetailClient>
             <CartButton></CartButton>
             <Comments comments={comments} productId={Number(id)}></Comments>
         </>

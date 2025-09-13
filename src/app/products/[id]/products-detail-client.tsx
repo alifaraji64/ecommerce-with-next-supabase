@@ -5,11 +5,15 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
 import { Star } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
-export default function ProductDetailClient({ product }: { product: Product }) {
+export default function ProductDetailClient({ product, ratings }: { product: Product, ratings: number[] }) {
     const { addItem } = useCart()
+    const avgRating =
+        ratings.length === 0
+            ? 0
+            : Math.round(ratings.reduce((sum, r) => sum + r, 0) / ratings.length);
     const [counter, setcounter] = useState(product.quantity && product.quantity > 0 ? 1 : 0)
     const handleAddCart = () => {
         if (product.quantity === 0) {
@@ -18,10 +22,10 @@ export default function ProductDetailClient({ product }: { product: Product }) {
         }
         addItem({ productId: product.id, quantity: counter })
         toast("item has been added to the cart", {
-          action: {
-            label: "dismiss",
-            onClick: () => console.log("Undo"),
-          },
+            action: {
+                label: "dismiss",
+                onClick: () => console.log("Undo"),
+            },
         })
     }
     return (
@@ -35,12 +39,12 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                         </CardDescription>
                         <div className='flex items-center'>
                             {
-                                Array.from({ length: product.rating ?? 0 }).map((_, i) => (
+                                Array.from({ length: avgRating ?? 0 }).map((_, i) => (
                                     <Star key={i} color='gold' fill='gold' />
                                 ))
                             }
                             {
-                                Array.from({ length: 5 - (product.rating ?? 0) }).map((_, i) => (
+                                Array.from({ length: 5 - (avgRating ?? 0) }).map((_, i) => (
                                     <Star key={i} color='gold' />
                                 ))
                             }

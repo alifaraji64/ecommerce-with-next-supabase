@@ -2,7 +2,6 @@ import React from 'react'
 import {
     Pagination,
     PaginationContent,
-    PaginationEllipsis,
     PaginationItem,
     PaginationLink,
     PaginationNext,
@@ -19,18 +18,21 @@ import {
 } from "@/components/ui/card"
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { get } from 'http'
 import { getProducts } from '../lib/db'
-import { Product } from '../lib/types'
+import { currentUser } from '@clerk/nextjs/server'
 
-export default async function Products() {
+export default async function Products({ searchParams }: { searchParams: { [key: string]: string } }) {
+    const currentPage = Number(searchParams.page) || 1
+    const ProductPerPage = 1;
+    const { products, count } = await getProducts({ currentPage, ProductPerPage });
+    const user = await currentUser();
+    const role = user?.publicMetadata.role;
+    console.log(currentPage);
 
-    const products: Product[] = await getProducts();
-    console.log(products);
-    if(!products || products.length === 0){
+    if (!products || products.length === 0) {
         return <div className='text-center'>no product has been added</div>
     }
-    
+
     return (
         <>
             <div>
@@ -54,37 +56,35 @@ export default async function Products() {
                                     add to your cart - ${product.price}
                                 </Button>
                                 <Link href={'/products/' + product.id} className="w-full">
-                                <Button variant={'outline'} className="w-full cursor-pointer">
-                                    Add to your cart
-                                </Button>
+                                    <Button variant={'outline'} className="w-full cursor-pointer">
+                                        Add to your cart
+                                    </Button>
                                 </Link>
-                                
+                                {role == 'admin' ? <Link href={'/admin/edit-product/' + product.id} className="w-full">
+                                    <Button variant={'secondary'} className="w-full cursor-pointer">
+                                        Edit This Product
+                                    </Button>
+                                </Link> : null}
+
+
                             </CardFooter>
                         </Card>
                     ))}
                 </div>
                 <Pagination className='bg-'>
+                    {currentPage !== 1 ? <PaginationItem>
+                        <PaginationPrevious href={`/products?page=${currentPage - 1}`} />
+                    </PaginationItem> : null}
+
                     <PaginationContent>
-                        <PaginationItem>
-                            <PaginationPrevious href="#" />
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationLink href="#">1</PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationLink href="#" isActive>
-                                2
-                            </PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationLink href="#">3</PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationEllipsis />
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationNext href="#" />
-                        </PaginationItem>
+                        {Array.from({ length: Math.ceil((count! / ProductPerPage)) }).map((_, i) => (
+                            <PaginationItem key={i} >
+                                <PaginationLink href={`/products?page=${i + 1}`} isActive={currentPage == i + 1}>{i + 1}</PaginationLink>
+                            </PaginationItem>))}
+                        {ProductPerPage * currentPage < count ? <PaginationItem>
+                            <PaginationNext href={`/products?page=${currentPage + 1}`} />
+                        </PaginationItem> : null}
+
                     </PaginationContent>
                 </Pagination>
             </div>

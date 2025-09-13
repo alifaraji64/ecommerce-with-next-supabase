@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label'
 import { useUser } from '@clerk/nextjs'
 import { User } from '@clerk/nextjs/server'
 import { Star } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import React, { useActionState, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -22,7 +23,7 @@ export default function Comments({ comments, productId }: { comments: Comment[] 
     const [starFivechecked, setstarFivechecked] = useState(false)
     const [isDialogOpen, setisDialogOpen] = useState(false)
     const { user, isLoaded } = useUser(); // ✅ client-side
-    console.log(comments);
+    const router=useRouter()
 
     const addCommentWithdata = addComment.bind(null, { rating: starFivechecked ? 5 : starFourchecked ? 4 : starThreechecked ? 3 : starTwochecked ? 2 : starOnechecked ? 1 : 0, productId, userId: user?.id, username: user?.username })
     const [state, formAction, isPending] = useActionState(addCommentWithdata, {
@@ -39,6 +40,7 @@ export default function Comments({ comments, productId }: { comments: Comment[] 
             setstarThreechecked(false)
             setstarFourchecked(false)
             setstarFivechecked(false)
+            router.refresh()
         }
         if (state.errors.msg) {
             toast.error(state.errors.msg)
@@ -110,7 +112,7 @@ export default function Comments({ comments, productId }: { comments: Comment[] 
             </div>
 
             <div className='flex flex-col gap-1'>
-                {comments?.map(comment => (
+                {(comments?.length) ? comments?.map(comment => (
                     <Card key={comment.id} className='w-full-[calc(100%-1rem)] bg-gray-200 m-4 p-1!'>
                         <CardContent className="flex-col items-start justify-start p-6 ">
                             <div className='flex gap-2 items-center mb-2'>
@@ -123,7 +125,7 @@ export default function Comments({ comments, productId }: { comments: Comment[] 
                             <p className='text-left text-xl'>{comment.body}</p>
                         </CardContent>
                     </Card>
-                ))}
+                )): <div className='p-3 text-gray-600 text-center'>no comment has been made to this product yet</div> }
             </div>
         </div>
     )

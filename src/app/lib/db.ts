@@ -13,10 +13,17 @@ const PRODUCTS: Product[] = [
     { id: 5, name: "Product 5", price: 500, description: "This is product 5", images: ["https://imgs.search.brave.com/T4r0Ba-OkUPmu5YAb0rR4c3ivLbObDlwuPgkRMg0nXE/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZWRlbGl2ZXJ5Lm5l/dC9lUFI4UHlLZjg0/d1BIeDdfUlltRWFn/LzAzM2M1M2M1LTI5/NmItNGJkYy1jZTU1/LTdlNWU5NGM3YmEw/MC84Ng"], quantity: 4, rating: 5, category: "electronics" },
     { id: 6, name: "Product 6", price: 600, description: "This is product 6", images: ["https://imgs.search.brave.com/T4r0Ba-OkUPmu5YAb0rR4c3ivLbObDlwuPgkRMg0nXE/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZWRlbGl2ZXJ5Lm5l/dC9lUFI4UHlLZjg0/d1BIeDdfUlltRWFn/LzAzM2M1M2M1LTI5/NmItNGJkYy1jZTU1/LTdlNWU5NGM3YmEw/MC84Ng"], quantity: 3, rating: 4, category: "electronics" },
 ]
-export const getProducts = async (): Promise<Product[]> => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    const { data } = await supabase.from('products').select('*');
-    return data as Product[];
+export const getProducts = async (
+    { currentPage, ProductPerPage }: { currentPage: number, ProductPerPage: number })
+    : Promise<{ products: Product[] | null, count: number }> => {
+    const from = (currentPage - 1) * ProductPerPage;
+    const to = from + ProductPerPage - 1
+    console.log(from, to);
+
+    const { data, count } = await supabase.from('products').select('*', { count: 'exact' }).range(from, to);
+    console.log(count);
+
+    return { products: data, count: count ?? 0 };
 }
 export const getProductById = async (id: number): Promise<Product | undefined> => {
     console.log('test');
@@ -24,12 +31,6 @@ export const getProductById = async (id: number): Promise<Product | undefined> =
     await new Promise(resolve => setTimeout(resolve, 1000));
     const { data } = await supabase.from('products').select('*').eq('id', id).single();
     return data as Product;
-}
-export const getCommentsByProductId = async (id: number): Promise<Comment[]> => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    const { error, data } = await supabase.from('comments').select('*').eq('productId', id).select()
-    if (error) { throw new Error('error while getting comments, try again later') }
-    return data as Comment[];
 }
 export const addComment = async ({ setisDialogOpen, rating, productId }: { setisDialogOpen: React.Dispatch<React.SetStateAction<boolean>>, rating: number, productId: number }, prevState: formState, formData: FormData) => {
     await new Promise(resolve => setTimeout(resolve, 1000));

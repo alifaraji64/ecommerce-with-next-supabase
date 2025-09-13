@@ -7,10 +7,12 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button'
 import Loading from './loading'
 import { getProductById } from '../lib/db'
+import { useRouter } from 'next/navigation'
 
 export default function CartList() {
-    const { items, removeItem,totalPrice } = useCart()
+    const { items, removeItem, totalPrice } = useCart()
     const [products, setproducts] = useState<Product[]>([])
+    const router = useRouter()
     useEffect(() => {
         const fetchProducts = async () => {
             await new Promise(resolve => setTimeout(resolve, 1000));
@@ -21,10 +23,10 @@ export default function CartList() {
         }
 
         fetchProducts();
-        
+
     }, [items])
     if (products.length === 0) {
-        return <Loading></Loading>;
+        router.back()
     }
     return (
         <>
@@ -50,7 +52,23 @@ export default function CartList() {
 
                         </CardContent>
                         <CardFooter className="flex-col gap-2">
-                            <Button variant="outline" className="w-full cursor-pointer">
+                            <Button variant="outline" className="w-full cursor-pointer" onClick={async() => {
+                                const res=await fetch('https://payid19.com/api/v1/create_invoice', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        public_key: process.env.PAYID19_PUBLIC_KEY,
+                                        private_key: process.env.PAYID19_PRIVATE_KEY,
+                                        test: 1,
+                                        price_amount: '100',
+                                        success_url: `http://localhost:3000/payid19`
+                                    })
+                                })
+                                console.log(res);
+                                
+                            }}>
                                 checkout
                             </Button>
                             <Button onClick={() => { removeItem(item) }} variant="destructive" className="w-full cursor-pointer">
