@@ -6,14 +6,15 @@ export type Product = {
     images: string[],
     quantity: number,
     rating: number,
-    category: string
+    category: string,
+    created_at?: Date
 }
 export type Comment = {
     id: number,
     body: string,
     username: string,
     productId: number,
-    rating:number
+    rating: number
 }
 export type CartItem = {
     productId: number,

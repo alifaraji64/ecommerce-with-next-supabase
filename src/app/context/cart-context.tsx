@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { createContext, useContext, useState, ReactNode, useEffect, Dispatch, SetStateAction } from "react";
 import { CartItem, Product } from "../lib/types";
 import { getProductById } from "../lib/db";
 
@@ -10,6 +10,7 @@ type CartContextType = {
     removeItem: (item: CartItem) => void;
     totalPrice: number;
     calcTotalPrice: () => void;
+    setItems:Dispatch<SetStateAction<CartItem[]>>
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -44,7 +45,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     };
 
     return (
-        <CartContext.Provider value={{ items, addItem, removeItem, totalPrice, calcTotalPrice }}>
+        <CartContext.Provider value={{ items, addItem, removeItem, totalPrice, calcTotalPrice,setItems }}>
             {children}
         </CartContext.Provider>
     );

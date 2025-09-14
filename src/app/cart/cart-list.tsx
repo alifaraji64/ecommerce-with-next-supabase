@@ -53,13 +53,6 @@ export default function CartList() {
 
                         </CardContent>
                         <CardFooter className="flex-col gap-2">
-                            <Button variant="outline" className="w-full cursor-pointer" onClick={async() => {
-                                const res = await createInvoice(totalPrice.toString())
-                                window.open(res.message, '_blank')
-                                
-                            }}>
-                                checkout
-                            </Button>
                             <Button onClick={() => { removeItem(item) }} variant="destructive" className="w-full cursor-pointer">
                                 Remove from cart
                             </Button>
@@ -68,6 +61,13 @@ export default function CartList() {
                     <hr />
                 </div>
             })}
+            <Button variant="outline" className="w-full cursor-pointer mb-6" onClick={async () => {
+                const res = await createInvoice(totalPrice.toString(), items.map(i => i.productId).join('-'), items.map(i => i.quantity).join('-'))
+                window.open(res.message, '_blank')
+
+            }}>
+                checkout
+            </Button>
         </>
 
     )
