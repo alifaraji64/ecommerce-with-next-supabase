@@ -1,6 +1,6 @@
 'use client'
 import { addComment } from '../[id]/actions'
-import { Comment, Error } from '@/app/lib/types'
+import { Comment, Error } from '@/lib/types'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'

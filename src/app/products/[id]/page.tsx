@@ -1,11 +1,11 @@
-import {  getProductById } from '@/app/lib/db';
+import {  getProductById } from '@/lib/db';
 import React from 'react'
 import ProductDetailClient from './products-detail-client';
 import CartButton from './cart-button';
 import Comments from './comments';
 import { toast } from 'sonner';
 import { getCommentsByProductId } from './actions';
-import { Comment } from '@/app/lib/types';
+import { Comment } from '@/lib/types';
 
 export default async function SingleProduct({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;

@@ -1,6 +1,6 @@
 'use server'
-import { supabase } from "../lib/supabase";
-import { Product } from "../lib/types";
+import { supabase } from "../../lib/supabase";
+import { Product } from "../../lib/types";
 
 export type Error = {
     name?: string;
@@ -25,7 +25,6 @@ export type FormState = {
     data?: any;
 }
 export const getCategories = async () => {
-    await new Promise(resolve => setTimeout(resolve, 2500));
     return ['electronics', 'clothing', 'books', 'furniture', 'toys', 'groceries', 'beauty', 'sports', 'automotive', 'other']
 }
 export const addProduct = async (
@@ -33,7 +32,6 @@ export const addProduct = async (
     prevState: FormState,
     formData: FormData
 ) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     const name = formData.get('name')?.toString() || '';
     const price = formData.get('price')?.toString() || '';
@@ -105,7 +103,6 @@ export const addProduct = async (
 
 
 export const editProduct = async ({ productId, images, files }: { productId: string, images: string[], files: File[] | null }, prevState: FormState, formData: FormData) => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
     const name = formData.get('name')?.toString() || '';
     const price = formData.get('price')?.toString() || '';
     const category = formData.get('category')?.toString() || '';

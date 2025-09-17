@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 
-import { getProductById } from '@/app/lib/db';
+import { getProductById } from '@/lib/db';
 import React, { useActionState } from 'react'
 import { editProduct, getCategories, Values } from '../../actions';
 import EditProductForm from '../edit-product-form';

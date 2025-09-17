@@ -1,5 +1,5 @@
 'use client'
-import { Product } from '@/app/lib/types'
+import { Product } from '@/lib/types'
 import React, { useActionState, useEffect, useState } from 'react'
 import { editProduct, Values } from '../actions'
 import { toast } from 'sonner'

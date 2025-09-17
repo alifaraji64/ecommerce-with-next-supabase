@@ -1,6 +1,6 @@
 'use client'
 import { useCart } from '@/app/context/cart-context'
-import { CartItems } from '@/app/lib/types'
+import { CartItems } from '@/lib/types'
 import { Button } from '@/components/ui/button'
 import { ShoppingCart } from 'lucide-react'
 import Link from 'next/link'

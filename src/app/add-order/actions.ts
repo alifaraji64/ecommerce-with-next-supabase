@@ -1,7 +1,7 @@
 'use server'
 
+import { supabase } from "@/lib/supabase"
 import { ifError } from "node:assert"
-import { supabase } from "../lib/supabase"
 
 export const updateProductsQty = async (id: string, quantity: string) => {
     const { data: product, error } = await supabase

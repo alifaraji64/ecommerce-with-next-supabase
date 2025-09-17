@@ -1,8 +1,8 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode, useEffect, Dispatch, SetStateAction } from "react";
-import { CartItem, Product } from "../lib/types";
-import { getProductById } from "../lib/db";
+import { CartItem, Product } from "@/lib/types";
+import { getProductById } from "@/lib/db";
 
 type CartContextType = {
     items: CartItem[];

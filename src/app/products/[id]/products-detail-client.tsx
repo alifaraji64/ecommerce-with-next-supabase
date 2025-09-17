@@ -1,6 +1,6 @@
 'use client'
 import { useCart } from '@/app/context/cart-context'
-import { Product } from '@/app/lib/types'
+import { Product } from '@/lib/types'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
@@ -20,7 +20,7 @@ export default function ProductDetailClient({ product, ratings }: { product: Pro
             toast.error("This product is out of stock")
             return;
         }
-        addItem({ productId: product.id, quantity: counter })
+        addItem({ productId: product.id, quantity: counter ?? 1 })
         toast("item has been added to the cart", {
             action: {
                 label: "dismiss",
@@ -30,7 +30,7 @@ export default function ProductDetailClient({ product, ratings }: { product: Pro
     }
     return (
         <div className='p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4'>
-            <div className='w-2/3 mx-auto'>
+            <div className=' w-full sm:w-2/3 mx-auto'>
                 <Card>
                     <CardHeader>
                         <CardTitle className='text-3xl'>{product.name}</CardTitle>
@@ -53,6 +53,25 @@ export default function ProductDetailClient({ product, ratings }: { product: Pro
                         <h3>${product.price}</h3>
                     </CardHeader>
                     <CardContent className="flex flex-col aspect-square items-center justify-center p-6">
+                        <div className='text-center block sm:hidden'>
+                            <Carousel className=" max-w-xs mx-auto  min-w-1/2 grid-cols-3 ">
+                                <CarouselContent>
+                                    {product.images.map((imageUrl, index) => (
+                                        <CarouselItem key={index}>
+                                            <div className="p-1">
+                                                <Card>
+                                                    <CardContent className="flex aspect-square items-center justify-center p-6">
+                                                        <img className='text-center mx-auto' src={imageUrl} alt="" />
+                                                    </CardContent>
+                                                </Card>
+                                            </div>
+                                        </CarouselItem>
+                                    ))}
+                                </CarouselContent>
+                                <CarouselPrevious />
+                                <CarouselNext />
+                            </Carousel>
+                        </div>
                         <div>
                             <p>in Stock: {product.quantity}</p>
                         </div>
@@ -79,8 +98,8 @@ export default function ProductDetailClient({ product, ratings }: { product: Pro
                     </CardFooter>
                 </Card>
             </div>
-            <div className='text-center'>
-                <Carousel className=" max-w-xs mx-auto  min-w-1/2 grid-cols-3">
+            <div className='text-center hidden sm:block'>
+                <Carousel className=" max-w-xs mx-auto  min-w-1/2 grid-cols-3 ">
                     <CarouselContent>
                         {product.images.map((imageUrl, index) => (
                             <CarouselItem key={index}>

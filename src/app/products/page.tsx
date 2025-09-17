@@ -18,8 +18,11 @@ import {
 } from "@/components/ui/card"
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { getProducts } from '../lib/db'
+import { getProducts } from '../../lib/db'
 import { currentUser } from '@clerk/nextjs/server'
+import { toast } from 'sonner'
+import AddToCartBtn from './add-to-cart-btn'
+import CartButton from './[id]/cart-button'
 
 export default async function Products({ searchParams }: { searchParams: { [key: string]: string } }) {
     const currentPage = Number(searchParams.page) || 1
@@ -36,6 +39,7 @@ export default async function Products({ searchParams }: { searchParams: { [key:
     return (
         <>
             <div>
+                <CartButton></CartButton>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
                     {products.map((product) => (
                         <Card className="w-full max-w-sm flex flex-col justify-between" key={product.id}>
@@ -52,14 +56,8 @@ export default async function Products({ searchParams }: { searchParams: { [key:
                             </Link>
 
                             <CardFooter className="flex-col gap-2">
-                                <Button type="submit" className="w-full">
-                                    add to your cart - ${product.price}
-                                </Button>
-                                <Link href={'/products/' + product.id} className="w-full">
-                                    <Button variant={'outline'} className="w-full cursor-pointer">
-                                        Add to your cart
-                                    </Button>
-                                </Link>
+
+                            <AddToCartBtn product={product}></AddToCartBtn>  
                                 {role == 'admin' ? <Link href={'/admin/edit-product/' + product.id} className="w-full">
                                     <Button variant={'secondary'} className="w-full cursor-pointer">
                                         Edit This Product

@@ -28,12 +28,10 @@ export const getProducts = async (
 export const getProductById = async (id: number): Promise<Product | undefined> => {
     console.log('test');
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
     const { data } = await supabase.from('products').select('*').eq('id', id).single();
     return data as Product;
 }
 export const addComment = async ({ setisDialogOpen, rating, productId }: { setisDialogOpen: React.Dispatch<React.SetStateAction<boolean>>, rating: number, productId: number }, prevState: formState, formData: FormData) => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
     const errors: CustomError = {};
     console.log('====================================');
     console.log(formData.get('comment'));

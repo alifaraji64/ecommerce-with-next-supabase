@@ -2,18 +2,20 @@
 import React, { Suspense, useEffect, useState } from 'react'
 import { useCart } from '../context/cart-context'
 import { get } from 'http'
-import { CartItem, Product } from '../lib/types'
+import { CartItem, Product } from '../../lib/types'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import Loading from './loading'
-import { getProductById } from '../lib/db'
+import { getProductById } from '@/lib/db'
 import { useRouter } from 'next/navigation'
 import { createInvoice } from './actions'
+import { useUser } from '@clerk/nextjs'
 
 export default function CartList() {
     const { items, removeItem, totalPrice } = useCart()
     const [products, setproducts] = useState<Product[]>([])
     const router = useRouter()
+    const {user}=useUser()
     useEffect(() => {
         const fetchProducts = async () => {
             await new Promise(resolve => setTimeout(resolve, 1000));
@@ -62,7 +64,7 @@ export default function CartList() {
                 </div>
             })}
             <Button variant="outline" className="w-full cursor-pointer mb-6" onClick={async () => {
-                const res = await createInvoice(totalPrice.toString(), items.map(i => i.productId).join('-'), items.map(i => i.quantity).join('-'))
+                const res = await createInvoice(totalPrice.toString(), items.map(i => i.productId).join('-'), items.map(i => i.quantity).join('-'),user?.id)
                 window.open(res.message, '_blank')
 
             }}>

@@ -1,7 +1,9 @@
+export const revalidate = 0; // disables ISR, always fetch fresh data
+
 import React from 'react'
-import { supabase } from '../lib/supabase'
+import { supabase } from '../../lib/supabase'
 import { currentUser } from '@clerk/nextjs/server'
-import { getProductById } from '../lib/db';
+import { getProductById } from '@/lib/db';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { format } from "date-fns";
 
@@ -29,8 +31,9 @@ export default async function Orders() {
             );
         })
     );
-    console.log(results);
-
+    if(!results.length){
+        return <h1 className='text-xl p-2'>No order have been placed yet</h1>
+    }
     return (
         <div className='p-4'>
             <h1>Orders</h1>
@@ -38,7 +41,7 @@ export default async function Orders() {
                 {results.map((order, index) => (
                     <Card key={index}>
                         <CardContent>
-                            <h2 className='text-center text-gray-500'>{order[index].created_at}</h2>
+                            <h2 className='text-center text-gray-500'>{order[0].created_at}</h2>
                             <div>
                                 {order.map((item, index) => (
                                     <div key={index}>
@@ -47,7 +50,7 @@ export default async function Orders() {
                                 ))}
 
                             </div>
-                            <h2 className='text-gray-400 mx-auto text-center mt-4'>total price: {order[index].total_price}</h2>
+                            <h2 className='text-gray-400 mx-auto text-center mt-4'>total price: ${order[0].total_price}</h2>
                         </CardContent>
                     </Card>
                 ))}
